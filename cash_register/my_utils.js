@@ -34,7 +34,6 @@
       }
       return val;
     }
-
    
     myUtils.buildElement = function buildElement(tagType, innerStr, attrs){
     //  takes in an HTML tag type and an inner HTML string 
@@ -83,5 +82,5 @@
         return symbol+currStr;
     }
 
-}.call(this))
 
+}.call(this))
