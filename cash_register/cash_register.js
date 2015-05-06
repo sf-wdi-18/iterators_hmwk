@@ -39,14 +39,12 @@ $(document).ready(function(){
   line_items.sort(compareLineItems);
 
   myUtils.myEach(line_items, function(item,i){
-    addItem(item.price, item.description);
+    addItem(item.price, item.description, item.qty);
   })
 
   updateSubTotal();
 
-
 });
-
 
 function addItem(price, title, quantity) {
   // YUCK! Let's refactor this!
@@ -61,11 +59,12 @@ function addItem(price, title, quantity) {
 }
 
 
-function addItem(price, title) {
+function addItem(price, title, quantity) {
     price = myUtils.toCurrencyString(price, "$");
     // if we hadn't fixed capitalization already:
     // title = title.toLowerCase();
     var innerTDs = myUtils.buildElement("td", title) + " " +
+                   myUtils.buildElement("td", quantity) + " " +
                    myUtils.buildElement("td", price); 
     $entries.append(myUtils.buildElement("tr", innerTDs));
 }
