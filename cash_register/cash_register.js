@@ -9,11 +9,9 @@ var line_items = [
     {description: "squash", price: 2.35, qty: 3}
 ];
 
-
-// let's fix the wonky capitalization
+// let's fix capitalization for line items
 myUtils.myEach(line_items, function(item, i){
-  console.log(item.description);
-  item.description.toLowerCase();
+  item.description = item.description.toLowerCase();
 });
 
 
@@ -22,6 +20,11 @@ var coupons = [
     {description: "squash", discount: 1.00, limit: 1},
     {description: "mouse", discount: 2.00, limit: 10}
 ];
+
+// and go ahead and fix the wonky capitalization in coupons
+myUtils.myEach(coupons, function(item, i){
+  item.description = item.description.toLowerCase();
+});
 
 var $entries, 
     $subTotal;
@@ -32,6 +35,8 @@ $(document).ready(function(){
   $subTotal = $('#subtotal');
   $salesTax = $('#salestax');
   $total = $('#total');
+
+  line_items.sort(compareLineItems);
 
   myUtils.myEach(line_items, function(item,i){
     addItem(item.price, item.description);
@@ -58,7 +63,8 @@ function addItem(price, title, quantity) {
 
 function addItem(price, title) {
     price = myUtils.toCurrencyString(price, "$");
-   // title = title.toLowerCase();
+    // if we hadn't fixed capitalization already:
+    // title = title.toLowerCase();
     var innerTDs = myUtils.buildElement("td", title) + " " +
                    myUtils.buildElement("td", price); 
     $entries.append(myUtils.buildElement("tr", innerTDs));
@@ -75,4 +81,18 @@ function updateSubTotal() {
   
   var totalAmount = subTotalPrice+salesTaxAmount;
   $total.text(myUtils.toCurrencyString(totalAmount, "$"));
+}
+
+
+// custom compare to sort line items
+function compareLineItems(a, b) {
+  // note: if we don't fix capitalization at start,
+  // would need to use a.description.toLowerCase() 
+  if (a.description < b.description) {
+    return -1;
+  } else if (a.description > b.description) {
+    return 1;
+  }
+  // a must be equal to b or we would have returned
+  return 0;
 }
