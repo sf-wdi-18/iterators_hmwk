@@ -10,6 +10,13 @@ var line_items = [
 ];
 
 
+// let's fix the wonky capitalization
+myUtils.myEach(line_items, function(item, i){
+  console.log(item.description);
+  item.description.toLowerCase();
+});
+
+
 var coupons = [
     {description: "Zebra", discount: 100, limit: 1},
     {description: "squash", discount: 1.00, limit: 1},
@@ -25,7 +32,6 @@ $(document).ready(function(){
   $subTotal = $('#subtotal');
   $salesTax = $('#salestax');
   $total = $('#total');
-
 
   myUtils.myEach(line_items, function(item,i){
     addItem(item.price, item.description);
@@ -52,7 +58,7 @@ function addItem(price, title, quantity) {
 
 function addItem(price, title) {
     price = myUtils.toCurrencyString(price, "$");
-    title = title.toLowerCase();
+   // title = title.toLowerCase();
     var innerTDs = myUtils.buildElement("td", title) + " " +
                    myUtils.buildElement("td", price); 
     $entries.append(myUtils.buildElement("tr", innerTDs));
