@@ -71,8 +71,10 @@ function addItem(price, title) {
 }
 
 function updateSubTotal() {
+  // updates the subtotal, sales tax, and total
+  // DOES take into account the quantity of items;
   var subTotalPrice = myUtils.myReduce(line_items, function (val, item, i, arr){
-    return val + myUtils.toDollarAmount(item.price);
+    return val + myUtils.toDollarAmount(item.price)*item.qty;
   });
   $subTotal.text(myUtils.toCurrencyString(subTotalPrice, "$"));
   
