@@ -47,6 +47,8 @@ $(document).ready(function(){
 
   updateReceiptVals(); // <- renamed updateSubTotal
 
+  discountZepplin();
+
 });
 
 function addItem(price, title, quantity) {
@@ -69,6 +71,11 @@ function addItem(price, title, quantity) {
     var innerTDs = [myUtils.buildElement("td", title), " ",
                    myUtils.buildElement("td", quantity), " ",
                    myUtils.buildElement("td", price)].join(""); 
+    // after building the tds, put them in their own tr (row) 
+    // within the tbody (which has id entries)
+    // note I've updated buildElement to take an id as a 3rd arg
+    // so that I can give each tr the item's description as an id                 
+    // and use it later to change color
     $entries.append(myUtils.buildElement("tr", innerTDs, title));
 }
 
@@ -93,11 +100,12 @@ function updateRefund(){
   myUtils.myEach(line_items, function(item){
     if (item.qty < 0){
       $refund.text("** contains refund(s) **");
-      $("#"+item.description).addClass("return");
+      // change the color of the whole row for the refund item
+      // (remember it has the description as its id)
+      $("#"+item.description).addClass("return"); 
     }
   })
 }
-
 
 // custom compare to sort line items
 function compareLineItems(a, b) {
