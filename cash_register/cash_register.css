@@ -64,6 +64,11 @@ body {
   text-align: right;
 }
 
-p {
+#refund {
   text-align: center;
+  color: red;
+}
+
+.return {
+  color: red;
 }

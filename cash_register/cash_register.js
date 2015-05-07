@@ -66,10 +66,10 @@ function addItem(price, title, quantity) {
     price = myUtils.toCurrencyString(price, "$");
     // if we hadn't fixed capitalization already:
     // title = title.toLowerCase();
-    var innerTDs = myUtils.buildElement("td", title) + " " +
-                   myUtils.buildElement("td", quantity) + " " +
-                   myUtils.buildElement("td", price); 
-    $entries.append(myUtils.buildElement("tr", innerTDs));
+    var innerTDs = [myUtils.buildElement("td", title), " ",
+                   myUtils.buildElement("td", quantity), " ",
+                   myUtils.buildElement("td", price)].join(""); 
+    $entries.append(myUtils.buildElement("tr", innerTDs, title));
 }
 
 function updateReceiptVals() {
@@ -87,19 +87,13 @@ function updateReceiptVals() {
   $total.text(myUtils.toCurrencyString(totalAmount, "$"));
 
   updateRefund();
-  console.log("yay");
 }
 
 function updateRefund(){
-  // to break out of a jQuery .each early, 
-  // we can return false from the callback.
-  // see my modification to our myEach, adding this
   myUtils.myEach(line_items, function(item){
-
-      console.log(item.qty);
     if (item.qty < 0){
-      $refund.text("** contains refund **");
-      return false;
+      $refund.text("** contains refund(s) **");
+      $("#"+item.description).addClass("return");
     }
   })
 }

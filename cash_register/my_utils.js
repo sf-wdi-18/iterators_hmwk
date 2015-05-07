@@ -89,5 +89,4 @@
         return symbol+currStr;
     }
 
-
 }.call(this))
