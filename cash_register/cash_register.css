@@ -63,3 +63,7 @@ body {
 #labels th {
   text-align: right;
 }
+
+p {
+  text-align: center;
+}
