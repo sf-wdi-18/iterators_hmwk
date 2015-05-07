@@ -47,10 +47,15 @@ $(document).ready(function(){
 
   updateReceiptVals(); // <- renamed updateSubTotal
 
-  discountZepplin();
+  percentDiscount("zepplin", 10);
+
+  applyCoupons();
 
 });
 
+
+
+/* old addItem
 function addItem(price, title, quantity) {
   // YUCK! Let's refactor this!
   var html_string = (
@@ -62,7 +67,7 @@ function addItem(price, title, quantity) {
   );
   $entries.append(html_string);
 }
-
+*/
 
 function addItem(price, title, quantity) {
     price = myUtils.toCurrencyString(price, "$");
@@ -118,4 +123,35 @@ function compareLineItems(a, b) {
   }
   // a must be equal to b or we would have returned
   return 0;
+
+}
+
+
+
+
+// @TODO: better to just remove and add element for display part?
+function percentDiscount(idName, percentage){
+  idName = idName.toLowerCase();
+  // look for matching item in line_items
+  matchingItem = line_items.filter(function(item, i){
+    // there should only be one with this id
+    return item.description === idName;
+  });
+  // update matching price (if there is one)
+  myUtils.myEach(matchingItem, function(item, i){
+    item.price = item.price*(1-percentage/100)
+  });
+  // now that we have price updated in line_items,
+  // update the displayed price
+  $("tr")
+    .filter("#"+idName)
+    .find(':contains("$")')
+    // now I use the fact there should only be one
+    .text(myUtils.toCurrencyString(matchingItem[0].price, "$"));
+  // finally, fix subtotals, sales tax, total
+  updateReceiptVals();
+}
+
+function applyCoupons(){
+  console.log("@TODO: write applyCoupons.")
 }
