@@ -21,7 +21,7 @@ var coupons = [
     {description: "mouse", discount: 2.00, limit: 10}
 ];
 
-// and go ahead and fix the wonky capitalization in coupons
+// and go ahead and fix capitalization in coupons
 myUtils.myEach(coupons, function(item, i){
   item.description = item.description.toLowerCase();
 });
@@ -35,14 +35,17 @@ $(document).ready(function(){
   $subTotal = $('#subtotal');
   $salesTax = $('#salestax');
   $total = $('#total');
+  $refund = $('#refund');
 
   line_items.sort(compareLineItems);
 
   myUtils.myEach(line_items, function(item,i){
     addItem(item.price, item.description, item.qty);
+    // if we haven't fixed capitalization, need to
+    // use item.description.toLowerCase() above
   })
 
-  updateSubTotal();
+  updateReceiptVals(); // <- renamed updateSubTotal
 
 });
 
@@ -69,10 +72,10 @@ function addItem(price, title, quantity) {
     $entries.append(myUtils.buildElement("tr", innerTDs));
 }
 
-function updateSubTotal() {
+function updateReceiptVals() {
   // updates the subtotal, sales tax, and total
   // DOES take into account the quantity of items;
-  var subTotalPrice = myUtils.myReduce(line_items, function (val, item, i, arr){
+  var subTotalPrice = myUtils.myReduce(line_items, function (val, item){
     return val + myUtils.toDollarAmount(item.price)*item.qty;
   });
   $subTotal.text(myUtils.toCurrencyString(subTotalPrice, "$"));
@@ -82,6 +85,23 @@ function updateSubTotal() {
   
   var totalAmount = subTotalPrice+salesTaxAmount;
   $total.text(myUtils.toCurrencyString(totalAmount, "$"));
+
+  updateRefund();
+  console.log("yay");
+}
+
+function updateRefund(){
+  // to break out of a jQuery .each early, 
+  // we can return false from the callback.
+  // see my modification to our myEach, adding this
+  myUtils.myEach(line_items, function(item){
+
+      console.log(item.qty);
+    if (item.qty < 0){
+      $refund.text("** contains refund **");
+      return false;
+    }
+  })
 }
 
 
