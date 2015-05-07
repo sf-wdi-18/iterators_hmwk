@@ -47,5 +47,5 @@ function addItem(price, title, quantity) {
 function updateSubTotal() {
 // Refactor this using our helper functions :D
   var subTotalPrice = 0; // !! That won't do! Calculate the actual subtotal.
-  $subTotal.text("$" + price); 
+  $subTotal.text("$" + subTotalPrice); 
 }
