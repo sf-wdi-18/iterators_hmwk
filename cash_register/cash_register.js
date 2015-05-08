@@ -164,8 +164,7 @@ function percentDiscount(desc, percentage) {
   matchingItem = line_items.filter(function(item, i) {
     return item.description === desc;
   });
-
-  if (matchingItem == true) {
+  if (matchingItem) {
     // we have a match!
     // note: no two items should have same description, so 
     // there are either 1 or 0 matching items
@@ -183,6 +182,7 @@ function percentDiscount(desc, percentage) {
       // update the text
       .text(myUtils.toCurrencyString(item.price, "$"));
     // finally, fix subtotals, sales tax, total
+    updateReceiptItems();
     updateReceiptVals();
   }
 }
