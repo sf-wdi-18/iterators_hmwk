@@ -13,11 +13,6 @@
         var len = arr.length;
         for(var i=0; i<len; i++){
             var cbresult = cb(arr[i], i, arr);
-            // let's end early if our cb returns false
-            // to match the jQuery .each behavior
-            if (cbresult === false){
-              break;
-            }
         }
     }
 
@@ -40,8 +35,6 @@
       return val;
     }
 
-
-  
     myUtils.buildElement = function buildElement(tagType, innerStr, attrs){
     //  takes in an HTML tag type and an inner HTML string 
     //  update! and a JavaScript object containing any additional attributes
