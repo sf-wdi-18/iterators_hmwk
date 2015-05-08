@@ -75,13 +75,14 @@ function addItem(price, title, quantity) {
     // title = title.toLowerCase();
     var innerTDs = [myUtils.buildElement("td", title), " ",
                    myUtils.buildElement("td", quantity), " ",
-                   myUtils.buildElement("td", price)].join(""); 
+                   myUtils.buildElement("td", price)];
+    console.log("adding item");//innerTDs[0].html()) 
     // after building the tds, put them in their own tr (row) 
     // within the tbody (which has id entries)
     // note I've updated buildElement to take an id as a 3rd arg
     // so that I can give each tr the item's description as an id                 
     // and use it later to change color
-    $entries.append(myUtils.buildElement("tr", innerTDs, title));
+    $entries.append(myUtils.buildElement("tr", innerTDs, {"id": title}));
 }
 
 function updateReceiptVals() {
@@ -125,9 +126,6 @@ function compareLineItems(a, b) {
   return 0;
 
 }
-
-
-
 
 // @TODO: better to just remove and add element for display part?
 function percentDiscount(idName, percentage){
