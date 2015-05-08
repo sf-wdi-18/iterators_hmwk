@@ -47,6 +47,9 @@ $(document).ready(function() {
   applyAllCoupons();
 });
 
+/*******************************************
+Adding an item to the receipt display
+********************************************/
 
 
 /* old addItem
@@ -80,6 +83,10 @@ function addItem(price, title, quantity) {
     "id": title
   }));
 }
+
+/*******************************************
+Calculating Totals & Updating Receipt Display
+********************************************/
 
 function updateReceiptItems() {
   // redoes the receipt item list, in sorted description order
@@ -126,6 +133,9 @@ function updateRefund() {
   })
 }
 
+/*******************************************
+Sorting Line Items
+********************************************/
 
 function compareLineItems(a, b) {
   // custom compare callback to sort line_items
@@ -142,6 +152,9 @@ function compareLineItems(a, b) {
 
 }
 
+/*******************************************
+Discounts
+********************************************/
 
 function percentDiscount(desc, percentage) {
   // in both line_items (model) and the displayed html (view):
@@ -176,6 +189,9 @@ function percentDiscount(desc, percentage) {
   }
 }
 
+/*******************************************
+Coupons
+********************************************/
 
 function applyAllCoupons() {
   // for each line item, look for matching coupons
@@ -206,5 +222,36 @@ function applySingleCoupon(item, itemIndex, coupon, couponIndex) {
     if (item.qty === 0) {
       line_items.splice(itemIndex, 1);
     }
+  }
+}
+
+/*******************************************
+Adding items to line_items with Form (Incomplete)
+********************************************/
+function addLineItem(name, price, quantity){
+// adds the item to the receipt (model)
+// then calls updater functions to add it to display
+// if an item with the same name is already on the receipt,
+  // overwrites that item's info
+  name = name.toLowerCase();
+
+  // filter line_items for item.description matching name
+  matchingItem = line_items.filter(function(item, i) {
+    return item.description === name;
+  });
+
+  if (matchingItem == true) {
+    // we have a match! replace its info!
+    item = matchingItem[0];
+    item.price = price;
+    item.qty = quantity;
+  } else {
+    newItem = {};
+    newItem["description"] = name;
+    newItem["price"] = price;
+    newItem["qty"] = quantity;
+    line_items.push(newItem);
+    updateReceiptItems();
+    updateReceiptVals(); 
   }
 }
