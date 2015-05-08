@@ -14,7 +14,6 @@ myUtils.myEach(line_items, function(item, i){
   item.description = item.description.toLowerCase();
 });
 
-
 var coupons = [
     {description: "Zebra", discount: 100, limit: 1},
     {description: "squash", discount: 1.00, limit: 2},
@@ -50,7 +49,6 @@ $(document).ready(function() {
 /*******************************************
 Adding an item to the receipt display
 ********************************************/
-
 
 /* old addItem
 function addItem(price, title, quantity) {
@@ -185,7 +183,7 @@ function percentDiscount(desc, percentage) {
       // update the text
       .text(myUtils.toCurrencyString(item.price, "$"));
     // finally, fix subtotals, sales tax, total
-    updateReceiptVals()
+    updateReceiptVals();
   }
 }
 
