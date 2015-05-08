@@ -22,14 +22,14 @@ var coupons = [
 ];
 
 // and go ahead and fix capitalization in coupons
-myUtils.myEach(coupons, function(item, i){
+myUtils.myEach(coupons, function(item, i) {
   item.description = item.description.toLowerCase();
 });
 
-var $entries, 
-    $subTotal;
+var $entries,
+  $subTotal;
 
-$(document).ready(function(){
+$(document).ready(function() {
 
   $entries = $("#entries");
   $subTotal = $('#subtotal');
@@ -64,28 +64,31 @@ function addItem(price, title, quantity) {
 */
 
 function addItem(price, title, quantity) {
-    price = myUtils.toCurrencyString(price, "$");
-    // if we hadn't fixed capitalization already:
-    // title = title.toLowerCase();
-    var innerTDs = [myUtils.buildElement("td", title), " ",
-                   myUtils.buildElement("td", quantity), " ",
-                   myUtils.buildElement("td", price)]; 
-    // after building the tds, put them in their own tr (row) 
-    // within the tbody (which has id entries)
-    // note I've updated buildElement to take an id as a 3rd arg
-    // so that I can give each tr the item's description as an id                 
-    // and use it later to change color
-    $entries.append(myUtils.buildElement("tr", innerTDs, {"id": title}));
+  price = myUtils.toCurrencyString(price, "$");
+  // if we hadn't fixed capitalization already:
+  // title = title.toLowerCase();
+  var innerTDs = [myUtils.buildElement("td", title), " ",
+    myUtils.buildElement("td", quantity), " ",
+    myUtils.buildElement("td", price)
+  ];
+  // after building the tds, put them in their own tr (row) 
+  // within the tbody (which has id entries)
+  // note I've updated buildElement to take an id as a 3rd arg
+  // so that I can give each tr the item's description as an id                 
+  // and use it later to change color
+  $entries.append(myUtils.buildElement("tr", innerTDs, {
+    "id": title
+  }));
 }
 
 function updateReceiptItems() {
-// redoes the receipt item list, in sorted description order
+  // redoes the receipt item list, in sorted description order
   // remove all old entries
   $entries.html("");
   // sort line items
   line_items.sort(compareLineItems);
   // add all items to html
-  myUtils.myEach(line_items, function(item,i){
+  myUtils.myEach(line_items, function(item, i) {
     addItem(item.price, item.description, item.qty);
     // if we haven't fixed capitalization, need to
     // use item.description.toLowerCase() above
@@ -96,37 +99,37 @@ function updateReceiptVals() { // replaces updateSubTotal
   // updates the subtotal, sales tax, and total
   // DOES take into account the quantity of items;
 
-  var subTotalPrice = myUtils.myReduce(line_items, function (val, item){
+  var subTotalPrice = myUtils.myReduce(line_items, function(val, item) {
     // since we're using reduce, val will be updated for each item
     // (to whatever val was plus the current item's price*quantity)
-    return val + myUtils.toDollarAmount(item.price)*item.qty;
+    return val + myUtils.toDollarAmount(item.price) * item.qty;
   });
   $subTotal.text(myUtils.toCurrencyString(subTotalPrice, "$"));
-  
-  var salesTaxAmount = subTotalPrice*(0.0725);
+
+  var salesTaxAmount = subTotalPrice * (0.0725);
   $salesTax.text(myUtils.toCurrencyString(salesTaxAmount, "$"));
-  
-  var totalAmount = subTotalPrice+salesTaxAmount;
+
+  var totalAmount = subTotalPrice + salesTaxAmount;
   $total.text(myUtils.toCurrencyString(totalAmount, "$"));
 
   updateRefund();
 }
 
-function updateRefund(){
-  myUtils.myEach(line_items, function(item){
-    if (item.qty < 0){
+function updateRefund() {
+  myUtils.myEach(line_items, function(item) {
+    if (item.qty < 0) {
       $refund.text("** contains refund(s) **");
       // change the color of the whole row for the refund item
       // (remember it has the description as its id)
-      $("#"+item.description).addClass("return"); 
+      $("#" + item.description).addClass("return");
     }
   })
 }
 
 
 function compareLineItems(a, b) {
-// custom compare callback to sort line_items
-// based on sort spec, a and b are elements of line_items
+  // custom compare callback to sort line_items
+  // based on sort spec, a and b are elements of line_items
   // note: if we don't fix capitalization at start,
   // would need to use a.description.toLowerCase() 
   if (a.description < b.description) {
@@ -140,45 +143,46 @@ function compareLineItems(a, b) {
 }
 
 
-function percentDiscount(desc, percentage){
-// in both line_items (model) and the displayed html (view):
-// reduces the price for the item with description (model) or id (view)
-// equal to desc by percentage percent
+function percentDiscount(desc, percentage) {
+  // in both line_items (model) and the displayed html (view):
+  // reduces the price for the item with description (model) or id (view)
+  // equal to desc by percentage percent
   desc = desc.toLowerCase();
-  // look for matching item in line_items
-  matchingItem = line_items.filter(function(item, i){
-    // @TODO - add to spec: 
+
+  // filter line_items for item matching description desc
+  matchingItem = line_items.filter(function(item, i) {
     return item.description === desc;
   });
-  if(matchingItem == true){
+
+  if (matchingItem == true) {
     // we have a match!
     // note: no two items should have same description, so 
     // there are either 1 or 0 matching items
     // define item to be just the one matching item itself
     item = matchingItem[0];
-    item.price = item.price*(1-percentage/100);
+    item.price = item.price * (1 - percentage / 100);
     // now that we have price updated in line_items,
     // update the displayed price
     // start by getting all the trs
     $priceElement = $("tr")
       // filter down to the one with the id we want
-      .filter("#"+desc)
+      .filter("#" + desc)
       // inside it, find the price th
       .find(':contains("$")')
       // update the text
       .text(myUtils.toCurrencyString(item.price, "$"));
-      // finally, fix subtotals, sales tax, total
-      updateReceiptVals()
+    // finally, fix subtotals, sales tax, total
+    updateReceiptVals()
   }
 }
 
 
-function applyAllCoupons(){  
+function applyAllCoupons() {
   // for each line item, look for matching coupons
   // callback uses applySingleCoupon to handle each coupon
-  myUtils.myEach(line_items, function(item, index){
-    for (var i = 0; i < coupons.length; i++){
-      if (item.description === coupons[i].description){
+  myUtils.myEach(line_items, function(item, index) {
+    for (var i = 0; i < coupons.length; i++) {
+      if (item.description === coupons[i].description) {
         applySingleCoupon(item, index, coupons[i], i);
       }
     }
@@ -187,17 +191,19 @@ function applyAllCoupons(){
   updateReceiptVals();
 }
 
-function applySingleCoupon(item, itemIndex, coupon, couponIndex){
-// applies the coupon to the item, up to the coupon quantity limit
-// changes the quantity of the item (unless it's negative - can't get a discount on return)
-// adds a coupon version of the item to the receipt
+function applySingleCoupon(item, itemIndex, coupon, couponIndex) {
+  // applies the coupon to the item, up to the coupon quantity limit
+  // changes the quantity of the item (unless it's negative - can't get a discount on return)
+  // adds a coupon version of the item to the receipt
   if (item.qty >= coupon.limit && coupon.limit > 0) {
     item.qty = item.qty - coupon.limit;
-    line_items.push({ description: item.description + "(coupon)",
-                      price: item.price-coupon.discount,
-                      qty: coupon.limit});
+    line_items.push({
+      description: item.description + "(coupon)",
+      price: item.price - coupon.discount,
+      qty: coupon.limit
+    });
     coupons.splice(couponIndex, 1);
-    if (item.qty === 0){
+    if (item.qty === 0) {
       line_items.splice(itemIndex, 1);
     }
   }
