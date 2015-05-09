@@ -1,6 +1,6 @@
 # Iterator Challenge - Sample Solution (partial)
 
-This repo contains sample solution for all but the SUPER BONUS form part.
+This branch contains sample solutions for all but the SUPER BONUS form part.
 
 ### Instructions
 
